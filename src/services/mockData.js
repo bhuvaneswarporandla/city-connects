@@ -1,3 +1,6 @@
+// Keys used in localStorage to persist demo state
+const STORAGE_KEY = 'city_connects_state_v1';
+
 let users = [
   { id: '1', email: 'admin@smartcity.com', password: 'admin123', role: 'admin', fullName: 'Admin User' },
   { id: '2', email: 'user@smartcity.com', password: 'user123', role: 'user', fullName: 'John Doe' }
@@ -25,12 +28,46 @@ let reports = [];
 let feedback = [];
 let currentUser = null;
 
+// Load persisted state (if present) to keep demo changes across reloads
+const loadState = () => {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const state = JSON.parse(raw);
+    if (state.users) users = state.users;
+    if (state.cityServices) cityServices = state.cityServices;
+    if (state.infrastructure) infrastructure = state.infrastructure;
+    if (state.amenities) amenities = state.amenities;
+    if (state.reports) reports = state.reports;
+    if (state.feedback) feedback = state.feedback;
+    if (state.currentUser) currentUser = state.currentUser;
+  } catch (err) {
+    // ignore corrupt state and fall back to defaults
+    console.warn('Failed to load persisted demo state', err);
+  }
+};
+
+const saveState = () => {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    const state = { users, cityServices, infrastructure, amenities, reports, feedback, currentUser };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (err) {
+    console.warn('Failed to persist demo state', err);
+  }
+};
+
+// initialize from storage
+loadState();
+
 export const mockDataService = {
   login: (email, password) => {
     const user = users.find(u => u.email === email && u.password === password);
     if (user) {
       currentUser = { ...user };
       delete currentUser.password;
+      saveState();
       return { success: true, user: currentUser };
     }
     return { success: false, error: 'Invalid credentials' };
@@ -50,11 +87,45 @@ export const mockDataService = {
     users.push(newUser);
     currentUser = { ...newUser };
     delete currentUser.password;
+    saveState();
     return { success: true, user: currentUser };
+  },
+
+  // Accept a Google profile-like object ({ email, fullName }) and either
+  // return the existing user or create a new one. This helps demo OAuth flows
+  // without a backend for a client-only app.
+  signInWithGoogle: (profile) => {
+    if (!profile || !profile.email) {
+      return { success: false, error: 'Invalid Google profile' };
+    }
+
+    // If a user already exists with this email, treat it like a login
+    const user = users.find(u => u.email === profile.email);
+    if (user) {
+      currentUser = { ...user };
+      delete currentUser.password;
+      saveState();
+      return { success: true, user: currentUser, created: false };
+    }
+
+    // Otherwise create a new user record based on the Google profile
+    const newUser = {
+      id: Date.now().toString(),
+      email: profile.email,
+      password: '', // no local password for OAuth-created users in mock
+      fullName: profile.fullName || profile.name || '',
+      role: 'user'
+    };
+    users.push(newUser);
+    currentUser = { ...newUser };
+    delete currentUser.password;
+    saveState();
+    return { success: true, user: currentUser, created: true };
   },
 
   logout: () => {
     currentUser = null;
+    saveState();
     return { success: true };
   },
 
@@ -65,6 +136,7 @@ export const mockDataService = {
   addCityService: (service) => {
     const newService = { ...service, id: Date.now().toString() };
     cityServices.push(newService);
+    saveState();
     return newService;
   },
 
@@ -72,6 +144,7 @@ export const mockDataService = {
     const index = cityServices.findIndex(s => s.id === id);
     if (index !== -1) {
       cityServices[index] = { ...cityServices[index], ...service };
+      saveState();
       return cityServices[index];
     }
     return null;
@@ -79,6 +152,7 @@ export const mockDataService = {
 
   deleteCityService: (id) => {
     cityServices = cityServices.filter(s => s.id !== id);
+    saveState();
     return { success: true };
   },
 
@@ -87,6 +161,7 @@ export const mockDataService = {
   addInfrastructure: (item) => {
     const newItem = { ...item, id: Date.now().toString() };
     infrastructure.push(newItem);
+    saveState();
     return newItem;
   },
 
@@ -94,6 +169,7 @@ export const mockDataService = {
     const index = infrastructure.findIndex(i => i.id === id);
     if (index !== -1) {
       infrastructure[index] = { ...infrastructure[index], ...item };
+      saveState();
       return infrastructure[index];
     }
     return null;
@@ -101,6 +177,7 @@ export const mockDataService = {
 
   deleteInfrastructure: (id) => {
     infrastructure = infrastructure.filter(i => i.id !== id);
+    saveState();
     return { success: true };
   },
 
@@ -109,6 +186,7 @@ export const mockDataService = {
   addAmenity: (amenity) => {
     const newAmenity = { ...amenity, id: Date.now().toString() };
     amenities.push(newAmenity);
+    saveState();
     return newAmenity;
   },
 
@@ -116,6 +194,7 @@ export const mockDataService = {
     const index = amenities.findIndex(a => a.id === id);
     if (index !== -1) {
       amenities[index] = { ...amenities[index], ...amenity };
+      saveState();
       return amenities[index];
     }
     return null;
@@ -123,14 +202,17 @@ export const mockDataService = {
 
   deleteAmenity: (id) => {
     amenities = amenities.filter(a => a.id !== id);
+    saveState();
     return { success: true };
   },
 
   getReports: (userId = null) => {
+    // return a fresh shallow copy of reports (and items) so callers get a new
+    // reference and React state setters will detect changes after updates
     if (userId) {
-      return reports.filter(r => r.userId === userId);
+      return reports.filter(r => r.userId === userId).map(r => ({ ...r }));
     }
-    return reports;
+    return reports.map(r => ({ ...r }));
   },
 
   addReport: (report) => {
@@ -141,6 +223,7 @@ export const mockDataService = {
       createdAt: new Date().toISOString()
     };
     reports.push(newReport);
+    saveState();
     return newReport;
   },
 
@@ -148,6 +231,7 @@ export const mockDataService = {
     const index = reports.findIndex(r => r.id === id);
     if (index !== -1) {
       reports[index] = { ...reports[index], ...updates };
+      saveState();
       return reports[index];
     }
     return null;
@@ -169,6 +253,7 @@ export const mockDataService = {
       createdAt: new Date().toISOString()
     };
     feedback.push(newFeedback);
+    saveState();
     return newFeedback;
   },
 
@@ -176,6 +261,7 @@ export const mockDataService = {
     const index = feedback.findIndex(f => f.id === id);
     if (index !== -1) {
       feedback[index] = { ...feedback[index], ...updates };
+      saveState();
       return feedback[index];
     }
     return null;

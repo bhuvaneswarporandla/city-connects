@@ -47,10 +47,39 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('smartcity_user');
   };
 
+  // Sign in using a Google credential (JWT) or a small profile object.
+  // For a production app you must verify the token on the server side.
+  const signInWithGoogle = (credentialOrProfile) => {
+    let profile = null;
+
+    // If we receive a string, assume it's a JWT credential returned by GSI
+    if (typeof credentialOrProfile === 'string') {
+      try {
+        const payload = credentialOrProfile.split('.')[1];
+        const json = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+        profile = { email: json.email, fullName: json.name };
+      } catch (err) {
+        return { success: false, error: 'Invalid Google credential' };
+      }
+    } else if (credentialOrProfile && credentialOrProfile.email) {
+      profile = credentialOrProfile;
+    } else {
+      return { success: false, error: 'Invalid Google profile' };
+    }
+
+    const result = mockDataService.signInWithGoogle(profile);
+    if (result.success) {
+      setUser(result.user);
+      localStorage.setItem('smartcity_user', JSON.stringify(result.user));
+    }
+    return result;
+  };
+
   const value = {
     user,
     login,
     register,
+    signInWithGoogle,
     logout,
     loading,
     isAdmin: user?.role === 'admin',
