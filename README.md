@@ -22,6 +22,22 @@ VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 
 Important: This demo decodes the Google credential on the client and uses a mock service. For production you should verify Google tokens on the server and integrate with a proper user database.
 
+## Login CAPTCHA
+
+To make the demo login a bit harder to automate, the Login page includes a simple client-side math captcha (addition) that must be answered before submitting email/password credentials.
+
+Notes:
+- The captcha is a lightweight demo and is rendered in `src/pages/Login.jsx`.
+- For real-world protection against bots you should integrate a production captcha provider such as Google reCAPTCHA (v2 checkbox, v2 invisible, or v3). ReCAPTCHA requires a server-side verification step for high security.
+
+Quick reCAPTCHA integration outline:
+1. Register a site and obtain a site key + secret from Google reCAPTCHA console.
+2. Add the site key to your frontend environment (e.g. `VITE_RECAPTCHA_SITE_KEY`).
+3. Render the reCAPTCHA widget on the login form and send the token to your server when the user submits.
+4. On the server, verify the token with Google's verification endpoint using your secret key; only accept login attempts after verification.
+
+If you want, I can integrate Google reCAPTCHA (client + server verification) into this project — tell me whether you'd prefer a frontend-only demo or the full server-verified flow and I will implement it next.
+
 ## Demo persistence (localStorage)
 
 This project stores demo data in memory for fast development. To preserve demo data across reloads (so edits, new services or reports stick between page refreshes) the mock data service now persists state to localStorage under the key `city_connects_state_v1`.

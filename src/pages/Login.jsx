@@ -7,6 +7,11 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  // simple demo math captcha state
+  const [captchaLeft, setCaptchaLeft] = useState(0);
+  const [captchaRight, setCaptchaRight] = useState(0);
+  const [captchaInput, setCaptchaInput] = useState('');
+  const [captchaError, setCaptchaError] = useState('');
   const navigate = useNavigate();
   const { login, signInWithGoogle } = useAuth();
 
@@ -27,6 +32,14 @@ const Login = () => {
     e.preventDefault();
     setError('');
 
+    // Validate captcha for email/password flow
+    const expected = captchaLeft + captchaRight;
+    if (String(expected) !== String(captchaInput).trim()) {
+      setCaptchaError('Captcha answer is incorrect. Please try again.');
+      return;
+    }
+    setCaptchaError('');
+
     if (!email || !password) {
       setError('Please fill in all fields');
       return;
@@ -45,6 +58,18 @@ const Login = () => {
   };
 
   useEffect(() => {
+    // generate a simple math captcha for the login form
+    const generateCaptcha = () => {
+      const a = Math.floor(Math.random() * 9) + 1; // 1..9
+      const b = Math.floor(Math.random() * 9) + 1; // 1..9
+      setCaptchaLeft(a);
+      setCaptchaRight(b);
+      setCaptchaInput('');
+      setCaptchaError('');
+    };
+
+    generateCaptcha();
+
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     if (typeof window !== 'undefined' && window.google && clientId) {
       window.google.accounts.id.initialize({
@@ -99,6 +124,38 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
             />
+          </div>
+
+          {/* Simple math captcha - demo only */}
+          <div className="form-group captcha-group">
+            <label htmlFor="captcha">Captcha: what is {captchaLeft} + {captchaRight}?</label>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <input
+                id="captcha"
+                type="text"
+                value={captchaInput}
+                onChange={(e) => setCaptchaInput(e.target.value)}
+                placeholder="Type result"
+                aria-label={`What is ${captchaLeft} plus ${captchaRight}`}
+                style={{ flex: 1 }}
+              />
+              <button
+                type="button"
+                className="auth-button small"
+                onClick={() => {
+                  // regenerate captcha
+                  const a = Math.floor(Math.random() * 9) + 1;
+                  const b = Math.floor(Math.random() * 9) + 1;
+                  setCaptchaLeft(a);
+                  setCaptchaRight(b);
+                  setCaptchaInput('');
+                  setCaptchaError('');
+                }}
+              >
+                Refresh
+              </button>
+            </div>
+            {captchaError && <div className="error-message" style={{ marginTop: 8 }}>{captchaError}</div>}
           </div>
 
           <button type="submit" className="auth-button">Login</button>
