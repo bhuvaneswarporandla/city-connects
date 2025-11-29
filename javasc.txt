@@ -1,0 +1,410 @@
+===================================== 06 - 07 - 2025 ==============================
+
+Data types in Java script
+
+string 
+
+number
+
+Boolean
+
+bigint
+
+symbol
+
+object
+
+arthematic operations:-
+
++
+-
+/
+*
+%
+++
+--
+**
+
+
+
+=================================== 13 - 08 - 2025 ============================
+
+functions in js:-
+
+block of statements used to perfect a specific task.
+
+advantage of using functions is reusability of code , performance , system performance increased because of functions.
+
+keyword : function
+
+types : 
+
+library or predefined functions : console.log , document.write() , math() , etc.....
+
+userdefined functions : 
+
+with args and with return
+
+with args and without return 
+
+without args and with return 
+
+without args and without return
+
+----------------------------------------
+
+recursion : a function calling itself
+
+function fact(n){
+	if(n==0 && n==1){
+		return  1;
+	}esle{
+		return n*fact(n-1);
+	}
+}
+
+let ans=fact(5);
+document.write(ans);
+
+--------------------------------------------------
+
+function fact(n){
+	if(n==0 && n==1){
+		return  1;
+	}esle{
+		return n*fact(n-1);
+	}
+}
+
+
+
+function nCr(n,r){
+	
+	
+
+
+
+	
+      //  nCr=n!/(n-r)!*r!
+
+
+	
+
+----------------------------------------
+
+what is the function of foreach() function?
+
+let arr=[1,2,3,4,5];
+document.write(arr);
+
+o/p:1 2 3 4 5
+
+
+for(int i=0;i<=4;i++){
+document.write(arr[i],"<br>");
+}
+
+o/p:
+1
+2
+3
+4
+5
+
+
+in react we are not using the for loop , we will use call back function
+example for call back function:
+1.foreach();
+2.Arrow(->);
+
+Example for foreach function:
+
+let names=["bhuvan","dazai","cod"];
+names.foreach(function(item){
+document.write(item,"<br>");
+})
+
+
+what is multi dimensional array?
+
+let arr=[
+    [1,2,3,4],
+    [5,6,7,8],
+    [12,45,8],
+];
+
+
+console.log(arr[0][2]);
+console.log(arr[1][3]);
+console.log(arr[2][0]);
+
+
+what is map (),filter(),reduce()?
+
+
+let numbers = [1, 2, 3, 4];
+
+let squares = numbers.map(function(num) {
+  return num * num;
+});
+
+console.log(squares); // [1, 4, 9, 16]
+console.log(numbers); // [1, 2, 3, 4] (original unchanged)
+
+
+
+=====================================================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="box">box1</div>
+    <div class="box">box2</div>
+    <div class="box">box3</div>
+    <button onclick="foo()">clickme</button>
+
+
+    <script>
+        function foo(){
+            let x=document.querySelector(".box")
+            x.textContent="this is updated information";
+        }
+    </script>
+</body>
+</html>
+
+
+==========================================================================
+
+ <script>
+        function foo(){
+            let x=document.querySelectorAll(".box")
+            x.forEach(function(item){
+                item.textContent="This is updated information";
+            })
+        }
+    </script>
+
+	=======================================================================
+
+
+Events in java:
+
+event is nothing but an action in web pages
+
+every event id having 2 properties
+
+1.Add event
+2.Delete event
+
+
+
+types of events in js:
+---------------------------
+Types in Mouseevent
+
+1.onclick
+2.ondouble click
+3.onmouse over
+4.onmouseout
+5.onmouseup
+6.onmousedown
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>this is the example for mouse event</h1>
+    <button onclick="func1()">click</button>
+    <button ondblclick="func2()">double_click</button>
+    <button onmouseover="func3()">over</button>
+    <button onmouseout="func4()">out</button>
+    <button onmouseup="func5()">up</button>
+    <button onmousedown="func6()">down</button>
+
+    <script>
+        function func1(){
+            alert('onclick is triggered');
+        }
+
+        function func2(){
+            alert('double click is triggered');
+        }
+        function func3(){
+            alert('over event is triggered');
+        }
+        function func4(){
+            alert('out event is triggered');
+        }
+        function func5(){
+            alert('up event is triggered');
+        }
+        
+        function func6(){
+            alert('down event is triggered');
+        }
+        </script>
+</body>
+</html>
+
+-------------------------------------------------------
+
+Keyboardevent
+
+1.keyup
+2.keydown
+3.keypress
+
+Form event
+Windowevent
+
+
+
+
+
+================================================ 25 08 2025 ========================================================
+
+string interpolation in js:
+
+const name="bhuvan";
+
+alert(`This is ${name}`);
+
+document.write("This is "+name);
+
+----------------------------------------------------------------------
+
+Types of storages:
+
+1.Local storages
+
+<script>
+        // const name="bhuvan";
+        // alert(`This is ${name}`);
+
+        localStorage.setItem("name","bhuvan");
+        localStorage.setItem("age",19);
+
+        document.write("<h1>This is an example for local storage</h1>");
+        document.write(localStorage.getItem("name"),"<br>");
+        document.write(localStorage.getItem("age"),"<br>");
+
+    </script>
+    
+2.Session storages
+
+
+local storage is permanent and here we can store 10 mb only
+session storage is temporary and here we can store only 5 mb
+
+methods using under storages:
+getitem()...to print the data
+setitem()...assign new values
+removeitem()..remove the data
+
+=======================================================================================
+
+promises are used for asynchronous api calls
+
+promises are the alternative solutions for callbackhel
+
+callbackhel is one calbackfunction is waiting for another callbackfunction.
+
+math.floor(function(bhuvan){
+
+})
+
+states in promises
+
+resolve
+
+reject
+
+waiting .... this state we cannot implement by using the program
+
+how to implement promises using two types:
+
+1-.then()
+2-Asyn/await().
+
+sync and async calls examples:
+
+-----------------------------------------------
+
+<script>
+        console.log("test1");
+      
+        console.log("test2");
+            
+        console.log("test3");
+            
+        console.log("test4");
+
+    </script>
+
+
+
+----------------------------------------------
+<script>
+
+        console.log("test1");
+        setTimeout(() => {
+            console.log("test2");
+            
+        },4000);
+        setTimeout(() => {
+            console.log("test3");
+            
+        }, 2000);
+        console.log("test4");
+
+    </script>
+
+
+    --------------------------------------------------------------
+
+    promises with this
+
+    <script>
+        let pr =new Promise((resolve,reject)=>{
+            resolve("api called successfully!");
+
+        })
+        let pr2 =new Promise((resolve,reject)=>{
+            resolve("second api called successfully!");
+
+        })
+        let pr3 =new Promise((resolve,reject)=>{
+            reject("3rd api called successfully!");
+
+        })
+        
+        
+            Promise.race([pr,pr2,pr3]).then((posRes)=>{console.log(posRes)},errRes=>{console.log(errRes)});
+            
+    </script>
+
+    ===========================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
