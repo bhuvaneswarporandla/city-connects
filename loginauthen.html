@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+
+
+
+    </style>
+</head>
+<body>
+
+<form style="text-align: center;">
+    
+<u><h1 style="background-color: lightblue;text-align: center;">Welcome</h1></u>
+    <fieldset>
+        <legend> Enter the User Credentials </legend>
+        <br>
+        <label for="username" >Enter username :</label>
+        <input type="text" id="username"placeholder="Enter username" required><br><br>
+        <label for="password">Enter password :</label>
+        <input type="password" id="password" placeholder="Enter password" required><br><br>
+        
+        <button type="button" onclick="foo()">Submit</button>
+        
+        
+    </fieldset>
+    
+    <h2 id="k" style="text-align: center; background-color: lightblue;">Thank You</h2>
+    </form>
+
+
+    <script>
+        function foo(){
+            let x=document.getElementById("username").value;
+            let y=document.getElementById("password").value;
+            let z=document.getElementById("k");
+
+            if(x=="klu" && y=="klu@123"){
+                z.textContent="Login successfully";
+                 z.style.backgroundColor = "lightgreen";
+            }else{
+                z.textContent="Login failed";
+                z.style.backgroundColor = "red";
+            }
+
+            
+
+        }
+    </script>
+
+
+</body>
+</html>
